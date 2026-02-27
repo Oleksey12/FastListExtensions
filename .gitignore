@@ -1,0 +1,5 @@
+TestListExtensions/obj/*
+Unit tests/obj/*
+TestListExtensions/bin/*
+Unit tests/bin/*
+.vs/*
