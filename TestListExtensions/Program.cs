@@ -13,6 +13,7 @@
             List<int> list = new List<int> { 1, 2, 3 };
             Span<int> span = CollectionsMarshal.AsSpan(list);
 
+            
 
         }
     }
