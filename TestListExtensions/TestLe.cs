@@ -108,6 +108,7 @@
             return startIndex + maxIndex;
         }
 
+
         public static T MaxOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
             if (elementsCount == (int)Elements.All)
@@ -280,5 +281,166 @@
 
             return max;
         }
+
+
+        public static T MinOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            if (typeof(T).IsPrimitive
+                && typeof(T) != typeof(float)
+                && typeof(T) != typeof(double)
+                && data.Count >= 32
+                && Vector<T>.Count >= 1
+                && Vector.IsHardwareAccelerated)
+            {
+                return data.MinOnRangeSIMDImpl(startIndex, elementsCount);
+            }
+
+            T result = data.MinOnRangeGenericImpl(startIndex, elementsCount);
+            if (typeof(T) == typeof(float) && double.IsNaN((float)(object)result))
+            {
+                throw new InvalidOperationException("Operation result is NaN!");
+            }
+
+            if (typeof(T) == typeof(double) && double.IsNaN((double)(object)result))
+            {
+                throw new InvalidOperationException("Operation result is NaN!");
+            }
+
+            return result;
+        }
+
+        public static double MinOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = -1)
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            return data.MinOnRangeSIMDImpl(startIndex, elementsCount);
+        }
+
+        public static float MinOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = -1)
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            return data.MinOnRangeSIMDImpl(startIndex, elementsCount);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T MinOnRangeGenericImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        {
+            T min = data[startIndex];
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+
+            for (int i = 1; i < values.Length; i++)
+            {
+                T current = values[i];
+                if (current.CompareTo(min) < 0)
+                {
+                    min = current;
+                }
+            }
+
+            return min;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T MinOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        {
+            T min = data[startIndex];
+
+            if (data.Count == 1)
+            {
+                return min;
+            }
+
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+            int vectorSize = Vector<T>.Count;
+            int index = 1;
+            int lastChunk = values.Length - vectorSize;
+            Vector<T> maxVector = new Vector<T>(min);
+
+            for (; index <= lastChunk; index += vectorSize)
+            {
+                Vector<T> vect = new Vector<T>(values.Slice(index, vectorSize));
+                maxVector = Vector.Min(maxVector, vect);
+            }
+
+            for (int i = 0; i < vectorSize; i++)
+            {
+                T current = maxVector[i];
+                if (current.CompareTo(min) < 0)
+                {
+                    min = current;
+                }
+            }
+
+            for (; index < values.Length; index++)
+            {
+                T current = values[index];
+                if (current.CompareTo(min) < 0)
+                {
+                    min = current;
+                }
+            }
+
+            return min;
+        }
+
+
+
     }
 }
