@@ -1,19 +1,21 @@
-﻿namespace TestListExtensions
+﻿namespace ListExtensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.InteropServices;
+    using BenchmarkDotNet.Attributes;
+    using BenchmarkDotNet.Jobs;
+    using BenchmarkDotNet.Running;
 
-    internal class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            int[] array = new int[] { 1, 2, 3 };
-            List<int> list = new List<int> { 1, 2, 3 };
-            Span<int> span = CollectionsMarshal.AsSpan(list);
+            RunMaxOnRangeBenchmarks();
+        }
 
-
+        private static void RunMaxOnRangeBenchmarks()
+        {
+            //var result1 = BenchmarkRunner.Run<IntMaxRangeBenchmnark>();
+            //var result2 = BenchmarkRunner.Run<DoubleMaxRangeBenchmnark>();
+            var result3 = BenchmarkRunner.Run<StringMaxRangeBenchmnark>();
         }
     }
 }
