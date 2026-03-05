@@ -29,6 +29,30 @@
         }
 
         [Test, Category("Generic")]
+        public void MinOnRange_FloatListWith12Nan_Throws()
+        {
+            // ARRANGE
+            List<float> list = new List<float> {1, 2, float.NaN };
+
+            // ACT
+
+            // ASSERT
+            Assert.Throws<InvalidOperationException>(() => list.MinOnRange());
+        }
+
+        [Test, Category("Generic")]
+        public void MinOnRange_DoubleListWith12Nan_Throws()
+        {
+            // ARRANGE
+            List<double> list = new List<double> { 1, 2, double.NaN };
+
+            // ACT
+
+            // ASSERT
+            Assert.Throws<InvalidOperationException>(() => list.MinOnRange());
+        }
+
+        [Test, Category("Generic")]
         public void MinOnRange_DoubleListWithNan_Throws()
         {
             // ARRANGE
