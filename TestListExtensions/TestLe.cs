@@ -108,11 +108,11 @@
             return startIndex + maxIndex;
         }
 
-        public static T MaxOnRange<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        public static T MaxOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
             if (elementsCount == (int)Elements.All)
             {
-                elementsCount = data.Count;
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -154,11 +154,11 @@
             return result;
         }
 
-        public static double MaxOnRangeSIMD(this List<double> data, int startIndex, int elementsCount = -1)
+        public static double MaxOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = -1)
         {
             if (elementsCount == (int)Elements.All)
             {
-                elementsCount = data.Count;
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -179,11 +179,11 @@
             return data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
         }
 
-        public static float MaxOnRangeSIMD(this List<float> data, int startIndex, int elementsCount = -1)
+        public static float MaxOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = -1)
         {
             if (elementsCount == (int)Elements.All)
             {
-                elementsCount = data.Count;
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -280,7 +280,5 @@
 
             return max;
         }
-
-
     }
 }
