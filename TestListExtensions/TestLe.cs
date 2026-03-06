@@ -17,6 +17,126 @@
             All = -1
         }
 
+
+        #region IndexOfOnRange
+
+        public static int IndexOfOnRange<T>(this List<T> data, T element, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("Searched element is null");
+            }
+
+            if (typeof(T) == typeof(float) && double.IsNaN((float)(object)element)
+                || typeof(T) == typeof(double) && double.IsNaN((double)(object)element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            if (typeof(T).IsPrimitive
+                && typeof(T) != typeof(float)
+                && typeof(T) != typeof(double)
+                && Vector.IsHardwareAccelerated
+                && data.Count >= 32
+                && Vector<T>.Count >= 1)
+            {
+                return data.IndexOfOnRangeSIMDImpl(element, startIndex, elementsCount);
+            }
+
+            return IndexOfOnRangeSpanImpl(data, element, startIndex, elementsCount);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOnRangeSpanImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
+        {
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+            
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i].Equals(element))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOnRangeListImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
+        {
+            for (int i = startIndex; i < elementsCount; i++)
+            {
+                if (data[i].Equals(element))
+                {
+                    return i - startIndex;
+                }
+            }
+
+            return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfOnRangeSIMDImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
+        {
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+
+            int vectorSize = Vector<T>.Count;
+            int index = 0;
+            int lastChunk = values.Length - vectorSize;
+            Vector<T> equalVector = new Vector<T>(element);
+
+            for (; index <= lastChunk; index += vectorSize)
+            {
+                Vector<T> vect = new Vector<T>(values.Slice(index, vectorSize));
+                if (Vector.EqualsAny(vect, equalVector))
+                {
+                    for (int i = 0; i < vectorSize; i++)
+                    {
+                        if (vect[i].Equals(element))
+                        {
+                            return index + i;
+                        }
+                    }
+                }
+            }
+
+            for (; index < values.Length; index++)
+            {
+                T current = values[index];
+                if (values[index].Equals(element))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+        
+        #endregion
+
+        #region MaxIndexOnRange
+
         /// <summary>
         /// Finds the index of biggest element in the list
         /// </summary>
@@ -31,12 +151,11 @@
         /// <exception cref="ArgumentException">Throws if the list is null or empty</exception>
         /// <exception cref="ArgumentOutOfRangeException">Throws if the list range is not correct</exception>
         /// <exception cref="InvalidOperationException">Throws the biggest element is null</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MaxIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
         {
             if (elementsCount == (int)Elements.All)
             {
-                elementsCount = data.Count;
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -56,31 +175,95 @@
 
             if (typeof(T).IsPrimitive
                 && typeof(T) != typeof(float) 
-                && typeof(T) != typeof(double) 
+                && typeof(T) != typeof(double)
+                && Vector.IsHardwareAccelerated
                 && data.Count >= 32
-                && Vector<T>.Count >= 1 
-                && Vector.IsHardwareAccelerated)
+                && Vector<T>.Count >= 1)
             {
                 return data.MaxIndexOnRangeSIMDImpl(startIndex, elementsCount);
             }
 
-            return MaxIndexOnRangeSpanImpl(data, startIndex, elementsCount);
+            int index =  MaxIndexOnRangeSpanImpl(data, startIndex, elementsCount);
+          
+            if (typeof(T) == typeof(float) && double.IsNaN((float)(object)data[index]))
+            {
+                throw new InvalidOperationException("Operation result is NaN!");
+            }
+
+            if (typeof(T) == typeof(double) && double.IsNaN((double)(object)data[index]))
+            {
+                throw new InvalidOperationException("Operation result is NaN!");
+            }
+
+            return index;
         }
 
+        public static int MaxIndexOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            float max = data.MaxOnRangeSIMD(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            return index;
+        }
+
+        public static int MaxIndexOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            double max = data.MaxOnRangeSIMD(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            return index;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MaxIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T max = data.MaxOnRange(startIndex, elementsCount);
-            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
-            int index = values.IndexOf(max);
-            return startIndex + index;
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            return index;
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MaxIndexOnRangeSpanImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
-            int maxIndex = startIndex;
+            int index = startIndex;
             T max = data[startIndex];
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
 
@@ -96,7 +279,7 @@
                 if (current.CompareTo(max) > 0)
                 {
                     max = current;
-                    maxIndex = i;
+                    index = i;
                 }
             }
 
@@ -105,9 +288,42 @@
                 throw new InvalidOperationException("The biggest element is null");
             }
 
-            return startIndex + maxIndex;
+            return index;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MaxIndexOnRangeListImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
+        {
+            int index = startIndex;
+            T max = data[startIndex];
+
+            for (int i = startIndex + 1; i < elementsCount; i++)
+            {
+                T current = data[i];
+
+                if (current is null)
+                {
+                    continue;
+                }
+
+                if (current.CompareTo(max) > 0)
+                {
+                    max = current;
+                    index = i;
+                }
+            }
+
+            if (max is null)
+            {
+                throw new InvalidOperationException("The biggest element is null");
+            }
+
+            return index - startIndex;
+        }
+
+        #endregion
+
+        #region MaxOnRange
 
         public static T MaxOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
@@ -134,9 +350,9 @@
             if (typeof(T).IsPrimitive
                 && typeof(T) != typeof(float)
                 && typeof(T) != typeof(double)
+                && Vector.IsHardwareAccelerated
                 && data.Count >= 32
-                && Vector<T>.Count >= 1
-                && Vector.IsHardwareAccelerated)
+                && Vector<T>.Count >= 1)
             {
                 return data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
             }
@@ -206,7 +422,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T MaxOnRangeListGenericImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        public static T MaxOnRangeListGenericImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
             T max = data[startIndex];
             for (int i = startIndex + 1; i < startIndex + elementsCount; i++)
@@ -222,7 +438,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T MaxOnRangeGenericImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        public static T MaxOnRangeGenericImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
             T max = data[startIndex];
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
@@ -240,7 +456,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T MaxOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        public static T MaxOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
             T max = data[startIndex];
 
@@ -282,7 +498,9 @@
             return max;
         }
 
+        #endregion
 
+        #region MinOnRange
         public static T MinOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
             if (elementsCount == (int)Elements.All)
@@ -380,7 +598,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T MinOnRangeGenericImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        public static T MinOnRangeGenericImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
             T min = data[startIndex];
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
@@ -398,7 +616,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T MinOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount = -1) where T : IComparable<T>
+        public static T MinOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
             T min = data[startIndex];
 
@@ -440,7 +658,7 @@
             return min;
         }
 
-
+        #endregion
 
     }
 }
