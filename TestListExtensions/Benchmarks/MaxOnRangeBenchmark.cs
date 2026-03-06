@@ -38,7 +38,21 @@
         public int SimdMax() => data.MaxOnRangeSIMDImpl(0, N);
 
         [Benchmark]
-        public int NonRangeMax() => data.Max();
+        public int LINQMax() => data.Max();
+
+        [Benchmark]
+        public int SliceMax()
+        {
+            var rangedData = data.Slice(0, N);
+            return rangedData.Max();
+        }
+
+        [Benchmark]
+        public int GetRangeMax()
+        {
+            var rangedData = data.GetRange(0, N);
+            return rangedData.Max();
+        }
     }
 
     [SimpleJob(RuntimeMoniker.Net80, launchCount: 1, warmupCount: 5, iterationCount: 10)]
@@ -70,7 +84,21 @@
         public double SimdMax() => data.MaxOnRangeSIMDImpl(0, N);
 
         [Benchmark]
-        public double NonRangeMax() => data.Max();
+        public double LINQMax() => data.Max();
+
+        [Benchmark]
+        public double SliceMax()
+        {
+            var rangedData = data.Slice(0, N);
+            return rangedData.Max();
+        }
+
+        [Benchmark]
+        public double GetRangeMax()
+        {
+            var rangedData = data.GetRange(0, N);
+            return rangedData.Max();
+        }
     }
 
     [SimpleJob(RuntimeMoniker.Net80, launchCount: 1, warmupCount: 5, iterationCount: 10)]
@@ -102,7 +130,21 @@
         public string SimdMax() => data.MaxOnRangeSIMDImpl(0, N);
 
         [Benchmark]
-        public string NonRangeMax() => data.Max();
+        public string LINQMax() => data.Max();
+
+        [Benchmark]
+        public string SliceMax()
+        {
+            var rangedData = data.Slice(0, N);
+            return rangedData.Max();
+        }
+
+        [Benchmark]
+        public string GetRangeMax()
+        {
+            var rangedData = data.GetRange(0, N);
+            return rangedData.Max();
+        }
     }
 }
 
