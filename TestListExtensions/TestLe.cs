@@ -1,14 +1,10 @@
 ﻿namespace ListExtensions
 {
-    using BenchmarkDotNet.Disassemblers;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Numerics;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
-    using System.Runtime.Intrinsics;
-    using static System.MemoryExtensions;
 
     public static class TestLe
     {
@@ -255,7 +251,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MaxIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
-            T max = data.MaxOnRange(startIndex, elementsCount);
+            T max = data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
             int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
             return index;
         }
@@ -307,6 +303,179 @@
                 }
 
                 if (current.CompareTo(max) > 0)
+                {
+                    max = current;
+                    index = i;
+                }
+            }
+
+            if (max is null)
+            {
+                throw new InvalidOperationException("The biggest element is null");
+            }
+
+            return index - startIndex;
+        }
+
+        #endregion
+
+        #region MinIndexOnRange
+        public static int MinIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            if (typeof(T).IsPrimitive
+                && typeof(T) != typeof(float)
+                && typeof(T) != typeof(double)
+                && Vector.IsHardwareAccelerated
+                && data.Count >= 32
+                && Vector<T>.Count >= 1)
+            {
+                return data.MinIndexOnRangeSIMDImpl(startIndex, elementsCount);
+            }
+
+            int index = MinIndexOnRangeSpanImpl(data, startIndex, elementsCount);
+
+            if (typeof(T) == typeof(float) && double.IsNaN((float)(object)data[index]))
+            {
+                throw new InvalidOperationException("Operation result is NaN!");
+            }
+
+            if (typeof(T) == typeof(double) && double.IsNaN((double)(object)data[index]))
+            {
+                throw new InvalidOperationException("Operation result is NaN!");
+            }
+
+            return index;
+        }
+
+        public static int MinIndexOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            float max = data.MinOnRangeSIMD(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            return index;
+        }
+
+        public static int MinIndexOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            double max = data.MinOnRangeSIMD(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            return index;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
+        {
+            T max = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            return index;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinIndexOnRangeSpanImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
+        {
+            int index = startIndex;
+            T max = data[startIndex];
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+
+            for (int i = 1; i < elementsCount; i++)
+            {
+                T current = values[i];
+
+                if (current is null)
+                {
+                    continue;
+                }
+
+                if (current.CompareTo(max) < 0)
+                {
+                    max = current;
+                    index = i;
+                }
+            }
+
+            if (max is null)
+            {
+                throw new InvalidOperationException("The biggest element is null");
+            }
+
+            return index;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinIndexOnRangeListImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
+        {
+            int index = startIndex;
+            T max = data[startIndex];
+
+            for (int i = startIndex + 1; i < elementsCount; i++)
+            {
+                T current = data[i];
+
+                if (current is null)
+                {
+                    continue;
+                }
+
+                if (current.CompareTo(max) < 0)
                 {
                     max = current;
                     index = i;
