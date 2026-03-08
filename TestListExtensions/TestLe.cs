@@ -23,7 +23,7 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
-            if (typeof(T) == typeof(float) && double.IsNaN((float)(object)element)
+            if (typeof(T) == typeof(float) && float.IsNaN((float)(object)element)
                 || typeof(T) == typeof(double) && double.IsNaN((double)(object)element))
             {
                 throw new ArgumentException("Searched element can't be NaN");
@@ -60,6 +60,78 @@
             }
 
             return IndexOfOnRangeSpanImpl(data, element, startIndex, elementsCount);
+        }
+
+        public static int IndexOfOnRangeSIMD(this List<float> data, float element, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("Searched element is null");
+            }
+
+            if (float.IsNaN(element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            int index = data.IndexOfOnRangeSIMDImpl(element, startIndex, elementsCount);
+            return index;
+        }
+
+        public static int IndexOfOnRangeSIMD(this List<double> data, double element, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("Searched element is null");
+            }
+
+            if (double.IsNaN(element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            int index = data.IndexOfOnRangeSIMDImpl(element, startIndex, elementsCount);
+            return index;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -183,12 +255,12 @@
           
             if (typeof(T) == typeof(float) && double.IsNaN((float)(object)data[index]))
             {
-                throw new InvalidOperationException("Operation result is NaN!");
+                throw new InvalidOperationException("Operation found index of NaN!");
             }
 
             if (typeof(T) == typeof(double) && double.IsNaN((double)(object)data[index]))
             {
-                throw new InvalidOperationException("Operation result is NaN!");
+                throw new InvalidOperationException("Operation found index of NaN!");
             }
 
             return index;
@@ -259,7 +331,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MaxIndexOnRangeSpanImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
-            int index = startIndex;
+            int index = 0;
             T max = data[startIndex];
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
 
@@ -356,12 +428,12 @@
 
             if (typeof(T) == typeof(float) && double.IsNaN((float)(object)data[index]))
             {
-                throw new InvalidOperationException("Operation result is NaN!");
+                throw new InvalidOperationException("Operation found index of NaN!");
             }
 
             if (typeof(T) == typeof(double) && double.IsNaN((double)(object)data[index]))
             {
-                throw new InvalidOperationException("Operation result is NaN!");
+                throw new InvalidOperationException("Operation found index of NaN!");
             }
 
             return index;
@@ -389,8 +461,8 @@
                 throw new ArgumentOutOfRangeException("Input range exceeds the list size");
             }
 
-            float max = data.MinOnRangeSIMD(startIndex, elementsCount);
-            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            float min = data.MinOnRangeSIMD(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
 
@@ -416,24 +488,24 @@
                 throw new ArgumentOutOfRangeException("Input range exceeds the list size");
             }
 
-            double max = data.MinOnRangeSIMD(startIndex, elementsCount);
-            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            double min = data.MinOnRangeSIMD(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MinIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
-            T max = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            T min = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MinIndexOnRangeSpanImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
-            int index = startIndex;
-            T max = data[startIndex];
+            int index = 0;
+            T min = data[startIndex];
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
 
             for (int i = 1; i < elementsCount; i++)
@@ -445,14 +517,14 @@
                     continue;
                 }
 
-                if (current.CompareTo(max) < 0)
+                if (current.CompareTo(min) < 0)
                 {
-                    max = current;
+                    min = current;
                     index = i;
                 }
             }
 
-            if (max is null)
+            if (min is null)
             {
                 throw new InvalidOperationException("The biggest element is null");
             }
@@ -464,7 +536,7 @@
         public static int MinIndexOnRangeListImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IComparable<T>
         {
             int index = startIndex;
-            T max = data[startIndex];
+            T min = data[startIndex];
 
             for (int i = startIndex + 1; i < elementsCount; i++)
             {
@@ -475,14 +547,14 @@
                     continue;
                 }
 
-                if (current.CompareTo(max) < 0)
+                if (current.CompareTo(min) < 0)
                 {
-                    max = current;
+                    min = current;
                     index = i;
                 }
             }
 
-            if (max is null)
+            if (min is null)
             {
                 throw new InvalidOperationException("The biggest element is null");
             }
