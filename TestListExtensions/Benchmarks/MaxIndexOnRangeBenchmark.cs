@@ -5,13 +5,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
 
     [SimpleJob(RuntimeMoniker.Net80, launchCount: 1, warmupCount: 5, iterationCount: 10)]
     [RPlotExporter]
-    public class IntMaxRangeBenchmnark
+    public class IntMaxIndexOnRangeBenchmark
     {
         private List<int> data = new List<int>();
 
@@ -29,35 +27,41 @@
         }
 
         [Benchmark]
-        public int ListMax() => data.MaxOnRangeListGenericImpl(0, N);
+        public int ListMaxIndex() => data.MaxIndexOnRangeListImpl(0, N);
 
         [Benchmark]
-        public int SpanMax() => data.MaxOnRangeGenericImpl(0, N);
+        public int SpanMaxIndex() => data.MaxIndexOnRangeSpanImpl(0, N);
 
         [Benchmark]
-        public int SimdMax() => data.MaxOnRangeSIMDImpl(0, N);
+        public int SimdMaxIndex() => data.MaxIndexOnRangeSIMDImpl(0, N);
 
         [Benchmark]
-        public int LINQMax() => data.Max();
-
-        [Benchmark]
-        public int SliceMax()
+        public int MaxIndexOf()
         {
-            var rangedData = data.Slice(0, N);
-            return rangedData.Max();
+            var max = data.Max();
+            return data.IndexOf(max);
         }
 
         [Benchmark]
-        public int GetRangeMax()
+        public int SliceMaxIndexOf()
+        {
+            var rangedData = data.Slice(0, N);
+            var max = rangedData.Max();
+            return rangedData.IndexOf(max);
+        }
+
+        [Benchmark]
+        public int GetRangeMaxIndexOf()
         {
             var rangedData = data.GetRange(0, N);
-            return rangedData.Max();
+            var max = rangedData.Max();
+            return rangedData.IndexOf(max);
         }
     }
 
     [SimpleJob(RuntimeMoniker.Net80, launchCount: 1, warmupCount: 5, iterationCount: 10)]
     [RPlotExporter]
-    public class DoubleMaxRangeBenchmnark
+    public class DoubleMaxIndexOnRangeBenchmark
     {
         private List<double> data = new List<double>();
 
@@ -75,35 +79,41 @@
         }
 
         [Benchmark]
-        public double ListMax() => data.MaxOnRangeListGenericImpl(0, N);
+        public int ListMaxIndex() => data.MaxIndexOnRangeListImpl(0, N);
 
         [Benchmark]
-        public double SpanMax() => data.MaxOnRangeGenericImpl(0, N);
+        public int SpanMaxIndex() => data.MaxIndexOnRangeSpanImpl(0, N);
 
         [Benchmark]
-        public double SimdMax() => data.MaxOnRangeSIMDImpl(0, N);
+        public int SimdMaxIndex() => data.MaxIndexOnRangeSIMDImpl(0, N);
 
         [Benchmark]
-        public double LINQMax() => data.Max();
-
-        [Benchmark]
-        public double SliceMax()
+        public int MaxIndexOf()
         {
-            var rangedData = data.Slice(0, N);
-            return rangedData.Max();
+            var max = data.Max();
+            return data.IndexOf(max);
         }
 
         [Benchmark]
-        public double GetRangeMax()
+        public int SliceMaxIndexOf()
+        {
+            var rangedData = data.Slice(0, N);
+            var max = rangedData.Max();
+            return rangedData.IndexOf(max);
+        }
+
+        [Benchmark]
+        public int GetRangeMaxIndexOf()
         {
             var rangedData = data.GetRange(0, N);
-            return rangedData.Max();
+            var max = rangedData.Max();
+            return rangedData.IndexOf(max);
         }
     }
 
     [SimpleJob(RuntimeMoniker.Net80, launchCount: 1, warmupCount: 5, iterationCount: 10)]
     [RPlotExporter]
-    public class StringMaxRangeBenchmnark
+    public class StringMaxIndexOnRangeBenchmark
     {
         private List<string> data = new List<string>();
 
@@ -121,29 +131,35 @@
         }
 
         [Benchmark]
-        public string ListMax() => data.MaxOnRangeListGenericImpl(0, N);
+        public int ListMaxIndex() => data.MaxIndexOnRangeListImpl(0, N);
 
         [Benchmark]
-        public string SpanMax() => data.MaxOnRangeGenericImpl(0, N);
+        public int SpanMaxIndex() => data.MaxIndexOnRangeSpanImpl(0, N);
 
         [Benchmark]
-        public string SimdMax() => data.MaxOnRangeSIMDImpl(0, N);
+        public int SimdMaxIndex() => data.MaxIndexOnRangeSIMDImpl(0, N);
 
         [Benchmark]
-        public string LINQMax() => data.Max();
-
-        [Benchmark]
-        public string SliceMax()
+        public int RangeMaxIndexOf()
         {
-            var rangedData = data.Slice(0, N);
-            return rangedData.Max();
+            var max = data.Max();
+            return data.IndexOf(max);
         }
 
         [Benchmark]
-        public string GetRangeMax()
+        public int SliceMaxIndexOf()
+        {
+            var rangedData = data.Slice(0, N);
+            var max = rangedData.Max();
+            return rangedData.IndexOf(max);
+        }
+
+        [Benchmark]
+        public int GetRangeMaxIndexOf()
         {
             var rangedData = data.GetRange(0, N);
-            return rangedData.Max();
+            var max = rangedData.Max();
+            return rangedData.IndexOf(max);
         }
     }
 }
