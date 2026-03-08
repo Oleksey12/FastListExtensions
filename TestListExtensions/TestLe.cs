@@ -13,7 +13,6 @@
             All = -1
         }
 
-
         #region IndexOfOnRange
 
         public static int IndexOfOnRange<T>(this List<T> data, T element, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>
@@ -372,7 +371,7 @@
                     {
                         if (vect[i].Equals(element))
                         {
-                            return index + i;
+                            return index - vectorSize + 1 + i;
                         }
                     }
                 }
