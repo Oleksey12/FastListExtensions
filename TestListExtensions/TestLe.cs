@@ -200,7 +200,196 @@
 
             return -1;
         }
-        
+
+        #endregion
+
+        #region LastIndexOfOnRange
+
+        public static int LastIndexOfOnRange<T>(this List<T> data, T element, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("Searched element is null");
+            }
+
+            if (typeof(T) == typeof(float) && float.IsNaN((float)(object)element)
+                || typeof(T) == typeof(double) && double.IsNaN((double)(object)element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            if (typeof(T).IsPrimitive
+                && typeof(T) != typeof(float)
+                && typeof(T) != typeof(double)
+                && Vector.IsHardwareAccelerated
+                && data.Count >= 32
+                && Vector<T>.Count >= 1)
+            {
+                return data.LastIndexOfOnRangeSIMDImpl(element, startIndex, elementsCount);
+            }
+
+            return LastIndexOfOnRangeSpanImpl(data, element, startIndex, elementsCount);
+        }
+
+        public static int LastIndexOfOnRangeSIMD(this List<float> data, float element, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("Searched element is null");
+            }
+
+            if (float.IsNaN(element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            int index = data.LastIndexOfOnRangeSIMDImpl(element, startIndex, elementsCount);
+            return index;
+        }
+
+        public static int LastIndexOfOnRangeSIMD(this List<double> data, double element, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException("Searched element is null");
+            }
+
+            if (double.IsNaN(element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            int index = data.LastIndexOfOnRangeSIMDImpl(element, startIndex, elementsCount);
+            return index;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LastIndexOfOnRangeSpanImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
+        {
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+
+            for (int i = values.Length - 1; i >= 0; i--)
+            {
+                if (values[i].Equals(element))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LastIndexOfOnRangeListImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
+        {
+            for (int i = startIndex + elementsCount - 1; i >= startIndex; i--)
+            {
+                if (data[i].Equals(element))
+                {
+                    return i - startIndex;
+                }
+            }
+
+            return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LastIndexOfOnRangeSIMDImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
+        {
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+
+            int vectorSize = Vector<T>.Count;
+            int index = values.Length - 1;
+            int lastChunk = vectorSize;
+            Vector<T> equalVector = new Vector<T>(element);
+
+            for (; index >= vectorSize; index -= vectorSize)
+            {
+                Vector<T> vect = new Vector<T>(values.Slice(index - vectorSize + 1, vectorSize));
+                if (Vector.EqualsAny(vect, equalVector))
+                {
+                    for (int i = vectorSize - 1; i >= 0; i--)
+                    {
+                        if (vect[i].Equals(element))
+                        {
+                            return index + i;
+                        }
+                    }
+                }
+            }
+
+            for (; index >= 0; index--)
+            {
+                T current = values[index];
+                if (values[index].Equals(element))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+
         #endregion
 
         #region MaxIndexOnRange
