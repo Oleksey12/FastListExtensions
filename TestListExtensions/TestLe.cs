@@ -512,7 +512,7 @@
         public static int MaxIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T max = data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
+            int index = data.IndexOf(max, startIndex, elementsCount);
             return index;
         }
         
@@ -685,7 +685,7 @@
         public static int MinIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T min = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
+            int index = data.IndexOf(min, startIndex, elementsCount);
             return index;
         }
 
