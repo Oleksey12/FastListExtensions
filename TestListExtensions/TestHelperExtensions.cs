@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Numerics;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices;
 
     public static class TestHelperExtensions
     {
@@ -12,6 +9,7 @@
         {
             All = -1
         }
+
         public static T Pop<T>(this List<T> inputList)
         {
             if (inputList == null)
@@ -24,9 +22,9 @@
                 throw new InvalidOperationException("Can't pop from empty list!");
             }
 
-            int lastIndex = inputList.Count - 1;
-            T item = inputList[lastIndex];
-            inputList.RemoveAt(lastIndex);
+            int index = inputList.Count - 1;
+            T item = inputList[index];
+            inputList.RemoveAt(index);
             return item;
         }
 
@@ -46,6 +44,44 @@
             T item = inputList[index];
             inputList.RemoveAt(index);
             return item;
+        }
+
+        public static bool TryPop<T>(this List<T> inputList, out T item)
+        {
+            item = default;
+            if (inputList == null)
+            {
+                throw new NullReferenceException("List cannot be null!");
+            }
+
+            if (inputList.Count == 0)
+            {
+                return false;
+            }
+
+            int index = inputList.Count - 1;
+            item = inputList[index];
+            inputList.RemoveAt(index);
+            return true;
+        }
+
+        public static bool TryPopFirst<T>(this List<T> inputList, out T item)
+        {
+            item = default;
+            if (inputList == null)
+            {
+                throw new NullReferenceException("List cannot be null!");
+            }
+
+            if (inputList.Count == 0)
+            {
+                return false;
+            }
+
+            int index = 0;
+            item = inputList[index];
+            inputList.RemoveAt(index);
+            return true;
         }
     }
 }
