@@ -5,7 +5,6 @@
     using System.Numerics;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
-    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public static class TestHelperExtensions
     {
@@ -22,7 +21,7 @@
 
             if (inputList.Count == 0)
             {
-                throw new IndexOutOfRangeException("Can't pop from empty list!");
+                throw new InvalidOperationException("Can't pop from empty list!");
             }
 
             int lastIndex = inputList.Count - 1;
@@ -40,7 +39,7 @@
 
             if (inputList.Count == 0)
             {
-                throw new IndexOutOfRangeException("Can't pop from empty list!");
+                throw new InvalidOperationException("Can't pop from empty list!");
             }
 
             int index = 0;
