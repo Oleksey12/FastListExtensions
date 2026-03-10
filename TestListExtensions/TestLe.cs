@@ -13,6 +13,70 @@
             All = -1
         }
 
+        #region AggregateOnRange
+        public static G AggregateOnRange<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (aggregateFunction == null)
+            {
+                throw new ArgumentNullException("Aggregate function cannot be null");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount == 0)
+            {
+                return startValue;
+            }
+
+            if (elementsCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            return data.AggregateOnRangeSpanImpl(aggregateFunction, startValue, startIndex, elementsCount);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static G AggregateOnRangeSpanImpl<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex , int elementsCount)
+        {
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+            G result = aggregateFunction(startValue, values[0]);
+
+            for (int i = 1; i < values.Length; i++) 
+            {
+                result = aggregateFunction(result, values[i]);
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static G AggregateOnRangeListImpl<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex, int elementsCount)
+        {
+            G result = aggregateFunction(startValue, data[startIndex]);
+
+            for (int i = startIndex + 1; i < elementsCount + startIndex; i++)
+            {
+                result = aggregateFunction(result, data[i]);
+            }
+
+            return result;
+        }
+        #endregion
+
         #region IndexOfOnRange
 
         public static int IndexOfOnRange<T>(this List<T> data, T element, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>
@@ -152,7 +216,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfOnRangeListImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
         {
-            for (int i = startIndex; i < elementsCount; i++)
+            for (int i = startIndex; i < elementsCount + startIndex - 1; i++)
             {
                 if (data[i].Equals(element))
                 {
@@ -553,7 +617,7 @@
             int index = startIndex;
             T max = data[startIndex];
 
-            for (int i = startIndex + 1; i < elementsCount; i++)
+            for (int i = startIndex + 1; i < startIndex + elementsCount; i++)
             {
                 T current = data[i];
 
@@ -726,7 +790,7 @@
             int index = startIndex;
             T min = data[startIndex];
 
-            for (int i = startIndex + 1; i < elementsCount; i++)
+            for (int i = startIndex + 1; i < startIndex + elementsCount; i++)
             {
                 T current = data[i];
 

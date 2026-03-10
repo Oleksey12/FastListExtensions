@@ -9,21 +9,37 @@
         public static void Main(string[] args)
         {
             //RunMaxOnRangeBenchmarks();
-            RunMaxIndexOnRangeBenchmarks();
+            //RunMaxIndexOnRangeBenchmarks();
+            //RunIndexOfOnRangeBenchmarks();
+            RunAggregateOnRangeBenchmarks();
         }
 
         private static void RunMaxOnRangeBenchmarks()
         {
-            var result1 = BenchmarkRunner.Run<IntMaxRangeBenchmnark>();
+            //var result1 = BenchmarkRunner.Run<IntMaxRangeBenchmnark>();
             //var result2 = BenchmarkRunner.Run<DoubleMaxRangeBenchmnark>();
-            //var result3 = BenchmarkRunner.Run<StringMaxRangeBenchmnark>();
+            var result3 = BenchmarkRunner.Run<StringMaxRangeBenchmnark>();
         }
 
         private static void RunMaxIndexOnRangeBenchmarks()
         {
-            var result1 = BenchmarkRunner.Run<IntMaxIndexOnRangeBenchmark>();
+            //var result1 = BenchmarkRunner.Run<IntMaxIndexOnRangeBenchmark>();
             //var result2 = BenchmarkRunner.Run<DoubleMaxIndexOnRangeBenchmark>();
             //var result3 = BenchmarkRunner.Run<StringMaxIndexOnRangeBenchmark>();
+        }
+
+        private static void RunIndexOfOnRangeBenchmarks()
+        {
+            //var result1 = BenchmarkRunner.Run<IntIndexOfOnRangeBenchmark>();
+            //var result2 = BenchmarkRunner.Run<DoubleIndexOfOnRangeBenchmark>();
+            var result3 = BenchmarkRunner.Run<StringIndexOfOnRangeBenchmark>();
+        }
+
+        private static void RunAggregateOnRangeBenchmarks()
+        {
+            //var result1 = BenchmarkRunner.Run<IntSumAggregateOnRangeBenchmnark>();
+            //var result2 = BenchmarkRunner.Run<DoubleSumAggregateOnRangeBenchmnark>();
+            var result3 = BenchmarkRunner.Run<StringLengthAggregateOnRangeenchmnark>();
         }
     }
 }
