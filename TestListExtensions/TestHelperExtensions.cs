@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
 
     public static class TestHelperExtensions
     {
@@ -10,6 +12,7 @@
             All = -1
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Pop<T>(this List<T> inputList)
         {
             if (inputList == null)
@@ -28,6 +31,7 @@
             return item;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T PopFirst<T>(this List<T> inputList)
         {
             if (inputList == null)
@@ -46,6 +50,7 @@
             return item;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryPop<T>(this List<T> inputList, out T item)
         {
             item = default;
@@ -65,6 +70,7 @@
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryPopFirst<T>(this List<T> inputList, out T item)
         {
             item = default;
@@ -82,6 +88,51 @@
             item = inputList[index];
             inputList.RemoveAt(index);
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryFind<T>(this List<T> data, Func<T, bool> function, out T result)
+        {
+            if (data == null)
+            {
+                throw new NullReferenceException("List cannot be null!");
+            }
+
+            if (function == null)
+            {
+                throw new ArgumentNullException("Predicate function cannot be null!");
+            }
+
+            return TryFindSpanImpl(data, function, out result);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryFindSpanImpl<T>(this List<T> data, Func<T, bool> function, out T result)
+        {
+            result = default;
+            Span<T> values = CollectionsMarshal.AsSpan(data);
+
+            for (int i = 0; i < values.Length; i++) 
+            {
+                if (function(values[i]))
+                {
+                    result = values[i];
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryConvert<T, G>(this T value, out G result) where G : class
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("Input item cannot be null!");
+            }
+
+            return (result = value as G) != null;
         }
     }
 }
