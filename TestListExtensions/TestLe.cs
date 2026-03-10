@@ -13,6 +13,57 @@
             All = -1
         }
 
+        #region ForEachOnRange
+        public static void ForEachOnRange<T>(this List<T> data, Action<T> action, int startIndex = 0, int elementsCount = (int)Elements.All)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("Action function cannot be null");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
+            }
+
+            if (elementsCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
+            }
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
+            {
+                throw new ArgumentOutOfRangeException("Input range exceeds the list size");
+            }
+
+            ForEachOnRangeSpanImpl(data, action, startIndex, elementsCount);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ForEachOnRangeListImpl<T>(this List<T> data, Action<T> action, int startIndex, int elementsCount)
+        {
+            for (int i = startIndex; i < startIndex + elementsCount; i++)
+            {
+                action(data[i]);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ForEachOnRangeSpanImpl<T>(this List<T> data, Action<T> action, int startIndex, int elementsCount)
+        {
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+            for (int i = startIndex; i < elementsCount; i++)
+            {
+                action(values[i]);
+            }
+        }
+        #endregion
+
         #region AggregateOnRange
         public static G AggregateOnRange<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
@@ -38,7 +89,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -104,7 +155,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -149,7 +200,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -185,7 +236,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -216,7 +267,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfOnRangeListImpl<T>(this List<T> data, T element, int startIndex, int elementsCount) where T : IEquatable<T>
         {
-            for (int i = startIndex; i < elementsCount + startIndex - 1; i++)
+            for (int i = startIndex; i < elementsCount + startIndex; i++)
             {
                 if (data[i].Equals(element))
                 {
@@ -293,7 +344,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -338,7 +389,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -374,7 +425,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -485,7 +536,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -532,7 +583,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -559,7 +610,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -658,7 +709,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -705,7 +756,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -732,7 +783,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -832,7 +883,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -878,7 +929,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -903,7 +954,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -1008,7 +1059,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -1054,7 +1105,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -1079,7 +1130,7 @@
 
             if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("The input list is empty");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)

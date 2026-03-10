@@ -11,7 +11,8 @@
             //RunMaxOnRangeBenchmarks();
             //RunMaxIndexOnRangeBenchmarks();
             //RunIndexOfOnRangeBenchmarks();
-            RunAggregateOnRangeBenchmarks();
+            //RunAggregateOnRangeBenchmarks();
+            RunForEachOnRangeBenchmarks();
         }
 
         private static void RunMaxOnRangeBenchmarks()
@@ -40,6 +41,13 @@
             //var result1 = BenchmarkRunner.Run<IntSumAggregateOnRangeBenchmnark>();
             //var result2 = BenchmarkRunner.Run<DoubleSumAggregateOnRangeBenchmnark>();
             var result3 = BenchmarkRunner.Run<StringLengthAggregateOnRangeenchmnark>();
+        }
+
+        private static void RunForEachOnRangeBenchmarks()
+        {
+            //var result1 = BenchmarkRunner.Run<IntForEachOnRangeBenchmark>();
+            //var result2 = BenchmarkRunner.Run<DoubleForEachOnRangeBenchmark>();
+            var result3 = BenchmarkRunner.Run<StringForEachOnRangeBenchmark>();
         }
     }
 }
