@@ -50,9 +50,9 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static G AggregateOnRangeSpanImpl<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex = 0, int elementsCount = (int)Elements.All)
+        public static G AggregateOnRangeSpanImpl<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex , int elementsCount)
         {
-            Span<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
             G result = aggregateFunction(startValue, values[0]);
 
             for (int i = 1; i < values.Length; i++) 
@@ -64,11 +64,11 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static G AggregateOnRangeListImpl<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex = 0, int elementsCount = (int)Elements.All)
+        public static G AggregateOnRangeListImpl<T, G>(this List<T> data, Func<G, T, G> aggregateFunction, G startValue, int startIndex, int elementsCount)
         {
             G result = aggregateFunction(startValue, data[startIndex]);
 
-            for (int i = startIndex; i < elementsCount + startIndex; i++)
+            for (int i = startIndex + 1; i < elementsCount + startIndex; i++)
             {
                 result = aggregateFunction(result, data[i]);
             }
