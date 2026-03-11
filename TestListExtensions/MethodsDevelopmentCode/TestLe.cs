@@ -57,7 +57,7 @@
         public static void ForEachOnRangeSpanImpl<T>(this List<T> data, Action<T> action, int startIndex, int elementsCount)
         {
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
-            for (int i = startIndex; i < elementsCount; i++)
+            for (int i = 0; i < elementsCount; i++)
             {
                 action(values[i]);
             }
