@@ -1,4 +1,4 @@
-﻿namespace ListExtensions
+﻿namespace DevelopListExtensions
 {
     using System;
     using System.Collections.Generic;
@@ -57,7 +57,7 @@
         public static void ForEachOnRangeSpanImpl<T>(this List<T> data, Action<T> action, int startIndex, int elementsCount)
         {
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
-            for (int i = startIndex; i < elementsCount; i++)
+            for (int i = 0; i < elementsCount; i++)
             {
                 action(values[i]);
             }
@@ -178,11 +178,6 @@
 
         public static int IndexOfOnRangeSIMD(this List<float> data, float element, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("Searched element is null");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
@@ -214,11 +209,6 @@
 
         public static int IndexOfOnRangeSIMD(this List<double> data, double element, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("Searched element is null");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
@@ -367,11 +357,6 @@
 
         public static int LastIndexOfOnRangeSIMD(this List<float> data, float element, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("Searched element is null");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
@@ -403,11 +388,6 @@
 
         public static int LastIndexOfOnRangeSIMD(this List<double> data, double element, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
-            if (element == null)
-            {
-                throw new ArgumentNullException("Searched element is null");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
@@ -592,7 +572,7 @@
                 throw new ArgumentOutOfRangeException("Input range exceeds the list size");
             }
 
-            float max = data.MaxOnRangeSIMD(startIndex, elementsCount);
+            float max = data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
             int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
             return index;
         }
@@ -619,7 +599,7 @@
                 throw new ArgumentOutOfRangeException("Input range exceeds the list size");
             }
 
-            double max = data.MaxOnRangeSIMD(startIndex, elementsCount);
+            double max = data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
             int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
             return index;
         }
@@ -765,7 +745,7 @@
                 throw new ArgumentOutOfRangeException("Input range exceeds the list size");
             }
 
-            float min = data.MinOnRangeSIMD(startIndex, elementsCount);
+            float min = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
             int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
@@ -792,7 +772,7 @@
                 throw new ArgumentOutOfRangeException("Input range exceeds the list size");
             }
 
-            double min = data.MinOnRangeSIMD(startIndex, elementsCount);
+            double min = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
             int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
