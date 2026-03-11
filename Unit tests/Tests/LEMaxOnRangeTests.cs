@@ -1,6 +1,6 @@
 ﻿namespace Unit_tests.Tests
 {
-    using ListExtensions;
+    using FastListExtensions;
 
     public class LEMaxOnRangeTests
     {
@@ -13,7 +13,7 @@
             // ACT
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.MaxOnRange());
+            Assert.Throws<ArgumentNullException>(() => list.MaxOnRange());
         }
 
         [Test, Category("Generic")]

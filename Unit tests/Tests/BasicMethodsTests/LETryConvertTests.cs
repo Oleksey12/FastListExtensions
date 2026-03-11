@@ -1,6 +1,6 @@
 ﻿namespace Unit_tests.Tests
 {
-    using ListExtensions;
+    using FastListExtensions;
 
     public class LETryConvertTests
     {

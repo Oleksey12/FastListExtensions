@@ -1,6 +1,6 @@
 ﻿namespace Unit_tests.Tests
 {
-    using ListExtensions;
+    using FastListExtensions;
 
     public class LELastIndexOfOnRangeTests
     {
@@ -13,7 +13,7 @@
             // ACT
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.LastIndexOfOnRange(1));
+            Assert.Throws<ArgumentNullException>(() => list.LastIndexOfOnRange(1));
         }
 
         [Test, Category("Generic")]

@@ -504,7 +504,6 @@
         /// <exception cref="InvalidOperationException">Throws the biggest element is null</exception>
         public static int MaxIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
         {
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
@@ -552,14 +551,14 @@
 
         public static int MaxIndexOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
-            if (elementsCount == (int)Elements.All)
-            {
-                elementsCount = data.Count - startIndex;
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -579,14 +578,14 @@
 
         public static int MaxIndexOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
-            if (elementsCount == (int)Elements.All)
-            {
-                elementsCount = data.Count - startIndex;
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -678,6 +677,11 @@
         #region MinIndexOnRange
         public static int MinIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -686,11 +690,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -725,6 +724,11 @@
 
         public static int MinIndexOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -733,11 +737,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -752,6 +751,11 @@
 
         public static int MinIndexOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = (int)Elements.All)
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -760,11 +764,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -852,6 +851,11 @@
 
         public static T MaxOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -860,11 +864,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -898,6 +897,11 @@
 
         public static double MaxOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = -1)
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -906,11 +910,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -923,6 +922,11 @@
 
         public static float MaxOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = -1)
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -931,11 +935,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -1028,14 +1027,14 @@
         #region MinOnRange
         public static T MinOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
-            if (elementsCount == (int)Elements.All)
-            {
-                elementsCount = data.Count - startIndex;
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -1074,14 +1073,14 @@
 
         public static double MinOnRangeSIMD(this List<double> data, int startIndex = 0, int elementsCount = -1)
         {
-            if (elementsCount == (int)Elements.All)
-            {
-                elementsCount = data.Count - startIndex;
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
@@ -1099,14 +1098,14 @@
 
         public static float MinOnRangeSIMD(this List<float> data, int startIndex = 0, int elementsCount = -1)
         {
-            if (elementsCount == (int)Elements.All)
-            {
-                elementsCount = data.Count - startIndex;
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)

@@ -1,6 +1,6 @@
 ﻿namespace Unit_tests.Tests
 {
-    using ListExtensions;
+    using FastListExtensions;
 
     public class LEMinIndexOnRangeTests
     {
@@ -13,7 +13,7 @@
             // ACT
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.MinIndexOnRange());
+            Assert.Throws<ArgumentNullException>(() => list.MinIndexOnRange());
         }
 
         [Test, Category("Generic")]

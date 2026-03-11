@@ -1,6 +1,6 @@
 ﻿namespace Unit_tests.Tests
 {
-    using ListExtensions;
+    using FastListExtensions;
 
     public class LEForEachOnRangeTests
     {
@@ -15,7 +15,7 @@
             // ACT
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.ForEachOnRange(x => test = x));
+            Assert.Throws<ArgumentNullException>(() => list.ForEachOnRange(x => test = x));
         }
 
         [Test, Category("Generic")]
