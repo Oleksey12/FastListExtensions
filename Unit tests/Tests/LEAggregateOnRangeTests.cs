@@ -1,6 +1,6 @@
 ﻿namespace Unit_tests.Tests
 {
-    using ListExtensions;
+    using FastListExtensions;
 
     public class LEAggregateOnRangeTests
     {
@@ -13,7 +13,7 @@
             // ACT
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.AggregateOnRange((x, y) => x + y, 0));
+            Assert.Throws<ArgumentNullException>(() => list.AggregateOnRange((x, y) => x + y, 0));
         }
 
         [Test, Category("Generic")]
@@ -53,16 +53,15 @@
         }
 
         [Test, Category("Generic")]
-        public void AggregateOnRange_IntEmptyListStartValue1_ReturnsStartValue1()
+        public void AggregateOnRange_IntEmptyListStartValue1_Throws()
         {
             // ARRANGE
             List<int> list = new List<int>();
 
             // ACT
-            int result = list.AggregateOnRange((x, y) => x + y, 1);
 
             // ASSERT
-            Assert.That(result, Is.EqualTo(1));
+            Assert.Throws<ArgumentNullException>(() => list.AggregateOnRange((x, y) => x + y, 0));
         }
 
         [Test, Category("Logic")]
