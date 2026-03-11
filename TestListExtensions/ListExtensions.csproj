@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="TestHelperExtensions.cs" />
+    <None Include="MethodsDevelopmentCode\TestHelperExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -361,6 +361,11 @@
         /// <returns>Index of the smallest element on the given range, as for sublist where startIndex is the first index</returns>
         public static int MinIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -369,11 +374,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -457,7 +457,6 @@
         /// <returns>Index of the biggest element on the given range, as for sublist where startIndex is the first index</returns>
         public static int MaxIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
         {
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
@@ -554,6 +553,11 @@
         /// <returns>The biggest element on the given range</returns>
         public static T MaxOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -562,11 +566,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -671,14 +670,14 @@
         /// <returns>The smallest element on the given range</returns>
         public static T MinOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = -1) where T : IComparable<T>
         {
-            if (elementsCount == (int)Elements.All)
-            {
-                elementsCount = data.Count - startIndex;
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount == (int)Elements.All)
+            {
+                elementsCount = data.Count - startIndex;
             }
 
             if (elementsCount <= 0)
