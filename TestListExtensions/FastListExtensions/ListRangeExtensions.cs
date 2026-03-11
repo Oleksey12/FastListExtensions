@@ -6,7 +6,7 @@
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// Performant extensions to make operations on the specific range
+    /// Performant List<T> extensions to make operations on the specific range
     /// </summary>
     public static class ListRangeExtensions
     {
@@ -59,7 +59,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ForEachOnRangeSpanImpl<T>(this List<T> data, Action<T> action, int startIndex, int elementsCount)
+        private static void ForEachOnRangeSpanImpl<T>(this List<T> data, Action<T> action, int startIndex, int elementsCount)
         {
             ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data).Slice(startIndex, elementsCount);
             for (int i = 0; i < elementsCount; i++)
