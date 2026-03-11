@@ -56,7 +56,7 @@
             item = default;
             if (inputList == null)
             {
-                throw new NullReferenceException("List cannot be null!");
+                return false;
             }
 
             if (inputList.Count == 0)
@@ -76,7 +76,7 @@
             item = default;
             if (inputList == null)
             {
-                throw new NullReferenceException("List cannot be null!");
+                return false;
             }
 
             if (inputList.Count == 0)
@@ -93,14 +93,15 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryFind<T>(this List<T> data, Func<T, bool> function, out T result)
         {
+            result = default;
             if (data == null)
             {
-                throw new NullReferenceException("List cannot be null!");
+                return false;
             }
 
             if (function == null)
             {
-                throw new ArgumentNullException("Predicate function cannot be null!");
+                return false;
             }
 
             return TryFindSpanImpl(data, function, out result);
@@ -127,9 +128,10 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryConvert<T, G>(this T value, out G result) where G : class
         {
+            result = null;
             if (value == null)
             {
-                throw new ArgumentNullException("Input item cannot be null!");
+                return false;
             }
 
             return (result = value as G) != null;
