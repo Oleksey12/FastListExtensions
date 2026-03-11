@@ -1,4 +1,4 @@
-﻿namespace ListExtensions
+﻿namespace DevelopListExtensions
 {
     using System;
     using System.Collections.Generic;

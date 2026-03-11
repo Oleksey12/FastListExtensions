@@ -1,4 +1,4 @@
-﻿namespace ListExtensions
+﻿namespace DevelopListExtensions
 {
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Jobs;
