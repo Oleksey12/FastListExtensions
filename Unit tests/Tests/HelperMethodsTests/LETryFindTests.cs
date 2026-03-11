@@ -5,7 +5,7 @@
     public class LETryFindTests
     {
         [Test, Category("Generic")]
-        public void TryFind_NullList_Throws()
+        public void TryFind_NullList_ReturnsFalse()
         {
             // ARRANGE
             List<int> list = null;
@@ -14,11 +14,11 @@
             int result = 0;
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.TryFind(x => x == 1, out result));
+            Assert.That(list.TryFind(x => x == 1, out result), Is.EqualTo(false));
         }
 
         [Test, Category("Generic")]
-        public void TryFind_IntListRegularExpression_Throws()
+        public void TryFind_IntListNullRegularExpression_ReturnsFalse()
         {
             // ARRANGE
             List<int> list = new List<int>();
@@ -27,7 +27,7 @@
             int result = 0;
 
             // ASSERT
-            Assert.Throws<ArgumentNullException>(() => list.TryFind(null, out result));
+            Assert.That(list.TryFind(null, out result), Is.EqualTo(false));
         }
 
         [Test, Category("Generic")]

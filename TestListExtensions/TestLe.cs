@@ -21,6 +21,11 @@
                 throw new ArgumentNullException("Action function cannot be null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -28,12 +33,7 @@
 
             if (elementsCount < 0)
             {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
+                throw new ArgumentOutOfRangeException("Element count must be non-negative.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -72,6 +72,11 @@
                 throw new ArgumentNullException("Aggregate function cannot be null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -84,12 +89,7 @@
 
             if (elementsCount < 0)
             {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
+                throw new ArgumentOutOfRangeException("Element count must be non-negative.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -137,6 +137,11 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (typeof(T) == typeof(float) && float.IsNaN((float)(object)element)
                 || typeof(T) == typeof(double) && double.IsNaN((double)(object)element))
             {
@@ -151,11 +156,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -183,6 +183,11 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (float.IsNaN(element))
             {
                 throw new ArgumentException("Searched element can't be NaN");
@@ -196,11 +201,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -219,9 +219,9 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
-            if (double.IsNaN(element))
+            if (data is null || data.Count == 0)
             {
-                throw new ArgumentException("Searched element can't be NaN");
+                throw new ArgumentNullException("The input list is empty");
             }
 
             if (elementsCount == (int)Elements.All)
@@ -229,14 +229,14 @@
                 elementsCount = data.Count - startIndex;
             }
 
+            if (double.IsNaN(element))
+            {
+                throw new ArgumentException("Searched element can't be NaN");
+            }
+
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -326,6 +326,11 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (typeof(T) == typeof(float) && float.IsNaN((float)(object)element)
                 || typeof(T) == typeof(double) && double.IsNaN((double)(object)element))
             {
@@ -340,11 +345,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -372,6 +372,11 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (float.IsNaN(element))
             {
                 throw new ArgumentException("Searched element can't be NaN");
@@ -385,11 +390,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -408,6 +408,11 @@
                 throw new ArgumentNullException("Searched element is null");
             }
 
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (double.IsNaN(element))
             {
                 throw new ArgumentException("Searched element can't be NaN");
@@ -421,11 +426,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -524,6 +524,12 @@
         /// <exception cref="InvalidOperationException">Throws the biggest element is null</exception>
         public static int MaxIndexOnRange<T>(this List<T> data, int startIndex = 0, int elementsCount = (int)Elements.All) where T : IEquatable<T>, IComparable<T>
         {
+
+            if (data is null || data.Count == 0)
+            {
+                throw new ArgumentNullException("The input list is empty");
+            }
+
             if (elementsCount == (int)Elements.All)
             {
                 elementsCount = data.Count - startIndex;
@@ -532,11 +538,6 @@
             if (elementsCount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
-            if (data is null || data.Count == 0)
-            {
-                throw new ArgumentNullException("The input list is empty");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -576,14 +577,14 @@
                 elementsCount = data.Count - startIndex;
             }
 
-            if (elementsCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -603,14 +604,14 @@
                 elementsCount = data.Count - startIndex;
             }
 
-            if (elementsCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -627,7 +628,7 @@
         public static int MaxIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T max = data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOf(max, startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
             return index;
         }
         
@@ -800,7 +801,7 @@
         public static int MinIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T min = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOf(min, startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
 
@@ -829,7 +830,7 @@
 
             if (min is null)
             {
-                throw new InvalidOperationException("The biggest element is null");
+                throw new InvalidOperationException("The smallest element is null");
             }
 
             return index;
@@ -1052,14 +1053,14 @@
                 elementsCount = data.Count - startIndex;
             }
 
-            if (elementsCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -1098,14 +1099,14 @@
                 elementsCount = data.Count - startIndex;
             }
 
-            if (elementsCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -1123,14 +1124,14 @@
                 elementsCount = data.Count - startIndex;
             }
 
-            if (elementsCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
-            }
-
             if (data is null || data.Count == 0)
             {
                 throw new ArgumentNullException("The input list is empty");
+            }
+
+            if (elementsCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Element count must be positive.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)

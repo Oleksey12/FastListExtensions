@@ -5,7 +5,7 @@
     public class LETryPopFirstTests
     {
         [Test, Category("Generic")]
-        public void TryPopFirst_NullList_Throws()
+        public void TryPopFirst_NullList_ReturnsFalse()
         {
             // ARRANGE
             List<int> list = null;
@@ -14,7 +14,8 @@
             int item = 0;
 
             // ASSERT
-            Assert.Throws<NullReferenceException>(() => list.TryPopFirst(out item));
+            Assert.That(list.TryPopFirst(out item), Is.EqualTo(false));
+
         }
 
         [Test, Category("Generic")]
