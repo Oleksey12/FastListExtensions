@@ -5,7 +5,7 @@
     public class LETryConvertTests
     {
         [Test, Category("Generic")]
-        public void TryConvert_NullValue_Throws()
+        public void TryConvert_NullValue_ReturnsFalse()
         {
             // ARRANGE
             List<int> list = null;
@@ -15,10 +15,10 @@
             InheritClass result = null;
 
             // ASSERT
-            Assert.Throws<ArgumentNullException>(() => inst.TryConvert(out result));
+            Assert.That(inst.TryConvert(out result), Is.EqualTo(false));
         }
 
-        [Test, Category("Logic")]
+        [Test, Category("Generic")]
         public void TryConvert_NotInheritClass_ReturnsFalse()
         {
             // ARRANGE

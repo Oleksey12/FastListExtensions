@@ -55,7 +55,7 @@
         }
 
         [Test, Category("Logic")]
-        public void ForEachOnRange_IntEmptyListSaveValue_DontDoAnything()
+        public void ForEachOnRange_IntEmptyList_Throws()
         {
             // ARRANGE
             List<int> list = new List<int>();
