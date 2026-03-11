@@ -33,7 +33,7 @@
 
             if (elementsCount < 0)
             {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
+                throw new ArgumentOutOfRangeException("Element count must be non-negative.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -89,7 +89,7 @@
 
             if (elementsCount < 0)
             {
-                throw new ArgumentOutOfRangeException("Element count must be positive.");
+                throw new ArgumentOutOfRangeException("Element count must be non-negative.");
             }
 
             if (startIndex < 0 || startIndex >= data.Count || startIndex + elementsCount > data.Count)
@@ -628,7 +628,7 @@
         public static int MaxIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T max = data.MaxOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOf(max, startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(max, startIndex, elementsCount);
             return index;
         }
         
@@ -801,7 +801,7 @@
         public static int MinIndexOnRangeSIMDImpl<T>(this List<T> data, int startIndex, int elementsCount) where T : IEquatable<T>, IComparable<T>
         {
             T min = data.MinOnRangeSIMDImpl(startIndex, elementsCount);
-            int index = data.IndexOf(min, startIndex, elementsCount);
+            int index = data.IndexOfOnRangeSIMDImpl(min, startIndex, elementsCount);
             return index;
         }
 
@@ -830,7 +830,7 @@
 
             if (min is null)
             {
-                throw new InvalidOperationException("The biggest element is null");
+                throw new InvalidOperationException("The smallest element is null");
             }
 
             return index;
