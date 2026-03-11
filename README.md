@@ -39,7 +39,7 @@ if (!list.TryFind(x => x > 2, out int result)) // Method will find 3 and result 
     return;
 }
 
-int biggest = list.MaxIndexOnRange(2); // Will find index of the biggest element, it will be 4
+int biggest = list.MaxIndexOnRange(2); // Will find index of the biggest element, it will be 2
 ```
 
 TODO: Create proper documentation
