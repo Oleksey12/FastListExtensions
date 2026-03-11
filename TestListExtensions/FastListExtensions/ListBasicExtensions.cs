@@ -6,13 +6,13 @@
     /// <summary>
     /// Extensions for simplifying List<T> operations
     /// </summary>
-    internal static class ListBasicExtensions
+    public static class ListBasicExtensions
     {
         /// <summary>
-        /// Removes and returns last element of the list
+        /// Removes and returns last element in the list
         /// </summary>
         /// <param name="data">Target list</param>
-        /// <returns>Last element of the list</returns>
+        /// <returns>Last element in the list</returns>
         /// <exception cref="NullReferenceException">Throws when list is null</exception>
         /// <exception cref="InvalidOperationException">Throws when list is empty</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -35,10 +35,10 @@
         }
 
         /// <summary>
-        /// Removes and returns first element of the list
+        /// Removes and returns first element in the list
         /// </summary>
         /// <param name="data">Target list</param>
-        /// <returns>First element of the list</returns>
+        /// <returns>First element in the list</returns>
         /// <exception cref="NullReferenceException">Throws when list is null</exception>
         /// <exception cref="InvalidOperationException">Throws when list is empty</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,7 +61,7 @@
         }
 
         /// <summary>
-        /// Safe method for removing and returning the last element of the list
+        /// Safe method for removing and returning the last element in the list
         /// </summary>
         /// <param name="data">Target list</param>
         /// <param name="result">Extracted element</param>
@@ -87,7 +87,7 @@
         }
 
         /// <summary>
-        /// Safe method for removing and returning the first element of the list
+        /// Safe method for removing and returning the first element in the list
         /// </summary>
         /// <param name="data">Target list</param>
         /// <param name="result">Extracted element</param>
@@ -143,7 +143,7 @@
         private static bool TryFindSpanImpl<T>(this List<T> data, Func<T, bool> function, out T result)
         {
             result = default;
-            Span<T> values = CollectionsMarshal.AsSpan(data);
+            ReadOnlySpan<T> values = CollectionsMarshal.AsSpan(data);
 
             for (int i = 0; i < values.Length; i++)
             {
