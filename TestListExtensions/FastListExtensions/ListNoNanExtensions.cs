@@ -645,7 +645,6 @@
             return max;
         }
 
-
         /// <summary>
         /// Finds the smallest element on the given range
         /// </summary>
@@ -724,7 +723,6 @@
 
             return min;
         }
-
 
         /// <summary>
         /// Finds the smallest element on the given range
